@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aishwarya • Your Creator DNA 💋</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Poppins', sans-serif; }
+  .cursive { font-family: 'Dancing Script', cursive; }
+  body {
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 40%, #e9d5ff 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .glass-dark {
+    background: rgba(88, 28, 135, 0.85);
+    backdrop-filter: blur(12px);
+    color: white;
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .floating {
+    animation: floating 4s ease-in-out infinite;
+  }
+  @keyframes floating {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-15px); }
+  }
+  .sparkle {
+    animation: sparkle 2s infinite;
+  }
+  @keyframes sparkle {
+    0%, 100% { opacity: 1; transform: scale(1) rotate(0); }
+    50% { opacity: 0.3; transform: scale(1.3) rotate(180deg); }
+  }
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 20px 40px rgba(236, 72, 153, 0.2);
+  }
+  .flip-card {
+    perspective: 1000px;
+  }
+  .flip-inner {
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  .flip-card:hover .flip-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-front, .flip-back {
+    backface-visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 1.5rem;
+  }
+  .flip-back {
+    transform: rotateY(180deg);
+  }
+  .shimmer {
+    background: linear-gradient(90deg, rgba(236,72,153,0.1) 0%, rgba(168,85,247,0.3) 50%, rgba(236,72,153,0.1) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .vibe-orb {
+    background: conic-gradient(from 0deg, #ec4899, #a855f7, #f59e0b, #10b981, #ec4899);
+    filter: blur(30px);
+    opacity: 0.4;
+    animation: rotate 20s linear infinite;
+  }
+  @keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  .typing-cursor::after {
+    content: '|';
+    animation: blink 1s infinite;
+  }
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    51%, 100% { opacity: 0; }
+  }
+  .scroll-smooth { scroll-behavior: smooth; }
+  .polaroid {
+    transform: rotate(-2deg);
+    transition: transform 0.3s;
+  }
+  .polaroid:hover {
+    transform: rotate(0) scale(1.05);
+  }
+  .scratch-card {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    cursor: pointer;
+    transition: all 0.4s;
+  }
+  .scratch-card.revealed {
+    background: rgba(255,255,255,0.7);
+    color: #1f2937;
+  }
+  .nav-pill {
+    transition: all 0.3s;
+  }
+  .nav-pill:hover {
+    transform: scale(1.05);
+  }
+</style>
+</head>
+<body class="scroll-smooth">
+
+<!-- Nav -->
+<nav class="sticky top-0 z-50 glass border-b border-white/50">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-xl">💋</div>
+      <div>
+        <div class="font-bold gradient-text">SlayWithAish</div>
+        <div class="text-xs text-gray-500">Creator Intelligence</div>
+      </div>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <a href="index.html" class="px-3 py-2 rounded-full bg-white/50 text-sm font-semibold text-gray-700 hover:scale-105 transition">📊 Overview</a>
+      <a href="youtube.html" class="px-3 py-2 rounded-full bg-white/50 text-sm font-semibold text-gray-700 hover:scale-105 transition">▶️ YouTube</a>
+      <a href="instagram.html" class="px-3 py-2 rounded-full bg-white/50 text-sm font-semibold text-gray-700 hover:scale-105 transition">📸 Instagram</a>
+      <a href="personality.html" class="px-3 py-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-semibold">✨ DNA</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="relative py-14 px-6 overflow-hidden">
+  <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <div class="vibe-orb w-[500px] h-[500px] rounded-full"></div>
+  </div>
+  <div class="absolute top-20 left-10 text-3xl sparkle">✨</div>
+  <div class="absolute top-40 right-20 text-2xl sparkle" style="animation-delay:0.5s;">💖</div>
+  <div class="absolute bottom-10 left-1/3 text-3xl sparkle" style="animation-delay:1s;">🌸</div>
+  
+  <div class="relative max-w-4xl mx-auto text-center">
+    <div class="inline-block px-4 py-1 bg-white/60 backdrop-blur rounded-full text-xs font-semibold text-purple-600 mb-4 fade-in">
+      🔮 Your Creator DNA Revealed
+    </div>
+    <h1 class="text-5xl md:text-7xl font-bold mb-4 fade-in" style="animation-delay:0.2s;">
+      Hey <span class="gradient-text">Aish</span>, <br/>
+      <span class="cursive text-6xl md:text-8xl gradient-text">let's talk about you</span>
+    </h1>
+    <p class="text-xl text-gray-600 fade-in" style="animation-delay:0.4s;">
+      888 videos. 871 posts. 7 years of showing up. <br/>
+      <span class="text-pink-600 font-semibold">Here's what your content actually says about you.</span>
+    </p>
+  </div>
+</section>
+
+<main class="max-w-7xl mx-auto px-6 pb-20">
+
+  <!-- THE CREATOR TYPE REVEAL -->
+  <section class="mb-10 fade-in" style="animation-delay:0.5s;">
+    <div class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-600 p-10 text-white shadow-2xl">
+      <div class="absolute -top-20 -right-20 text-[250px] opacity-10 floating">💎</div>
+      <div class="absolute -bottom-10 -left-10 text-[180px] opacity-10 floating" style="animation-delay:1s;">🌸</div>
+      
+      <div class="relative text-center">
+        <p class="text-sm opacity-80 uppercase tracking-widest mb-2">Your Creator Archetype</p>
+        <h2 class="text-5xl md:text-6xl font-bold mb-3">
+          The <span class="cursive text-7xl md:text-8xl">Cozy Experimenter</span>
+        </h2>
+        <p class="text-lg opacity-90 max-w-2xl mx-auto mb-6">
+          Part DIY queen, part relatable bestie. You try everything — resin, dance, Pilates, avocado toast, life rebrands — and bring your audience along for the ride. Your superpower isn't perfection. It's <span class="font-bold italic">honest curiosity</span>.
+        </p>
+        
+        <div class="grid grid-cols-3 gap-3 max-w-xl mx-auto">
+          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+            <div class="text-2xl mb-1">💗</div>
+            <div class="text-xs opacity-80">Vibe</div>
+            <div class="font-bold">Soft glam</div>
+          </div>
+          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+            <div class="text-2xl mb-1">🌱</div>
+            <div class="text-xs opacity-80">Energy</div>
+            <div class="font-bold">Growing</div>
+          </div>
+          <div class="bg-white/20 backdrop-blur rounded-xl p-3">
+            <div class="text-2xl mb-1">🎨</div>
+            <div class="text-xs opacity-80">Style</div>
+            <div class="font-bold">Crafty</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- YOUR CONTENT PERSONALITY CHART -->
+  <section class="grid md:grid-cols-2 gap-6 mb-10">
+    
+    <div class="glass rounded-3xl p-8 card-hover fade-in" style="animation-delay:0.6s;">
+      <h3 class="text-2xl font-bold mb-1">🌈 Your Content Personality</h3>
+      <p class="text-sm text-gray-600 mb-4">A deeper look at how you show up</p>
+      <div style="height:320px;"><canvas id="personalityChart"></canvas></div>
+      <div class="mt-4 p-3 bg-pink-50 rounded-xl text-sm text-gray-700">
+        💡 You're <b>high on Authenticity and Aesthetic</b> — people feel like they know you. Your Trend-Riding score is climbing (Kashmiri bangles 🔥).
+      </div>
+    </div>
+
+    <div class="glass rounded-3xl p-8 card-hover fade-in" style="animation-delay:0.7s;">
+      <h3 class="text-2xl font-bold mb-1">🎭 Your Content Moods</h3>
+      <p class="text-sm text-gray-600 mb-4">What your captions actually say</p>
+      <div style="height:320px;"><canvas id="moodChart"></canvas></div>
+      <div class="mt-4 p-3 bg-purple-50 rounded-xl text-sm text-gray-700">
+        💡 You lean <b>Playful & Relatable</b>. "Mann to ni lalchaya", "Kahi mai pagal toh nahi" — this Hindi-English mix is YOUR voice. Protect it.
+      </div>
+    </div>
+  </section>
+
+  <!-- THE SIX THINGS YOUR CONTENT REVEALS -->
+  <section class="mb-10 fade-in" style="animation-delay:0.8s;">
+    <h3 class="text-3xl font-bold text-center mb-2">What Your Content <span class="gradient-text">Secretly Tells Us</span></h3>
+    <p class="text-center text-gray-600 mb-8">Patterns you might not have noticed yourself 👀</p>
+    
+    <div class="grid md:grid-cols-3 gap-5">
+      <!-- Card 1: Small city pride -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="text-4xl mb-3">🏔️</div>
+        <h4 class="font-bold text-lg mb-2">You love Dehradun</h4>
+        <p class="text-sm text-gray-600">Most of your content is tagged in Dehradun, Rishikesh, Vrindavan — you're proudly rooted, not running to Bombay. This is your <b>unique angle</b> most creators don't have.</p>
+      </div>
+      
+      <!-- Card 2: Budget queen -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="text-4xl mb-3">🛍️</div>
+        <h4 class="font-bold text-lg mb-2">Budget beauty = your lane</h4>
+        <p class="text-sm text-gray-600">Meesho. Nykaa sales. Affordable hauls. Your audience isn't rich — they're girls your age looking for real value. You speak to them.</p>
+      </div>
+      
+      <!-- Card 3: Hobby collector -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="text-4xl mb-3">🎨</div>
+        <h4 class="font-bold text-lg mb-2">You're a hobby magpie</h4>
+        <p class="text-sm text-gray-600">Resin art, dance, Pilates, cooking, organizing. You try things. This is <b>Gen Z's exact mood</b> — people want to see someone else experiment first.</p>
+      </div>
+      
+      <!-- Card 4: Quiet hustler -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="text-4xl mb-3">💪</div>
+        <h4 class="font-bold text-lg mb-2">You're quietly insane</h4>
+        <p class="text-sm text-gray-600">888 videos in 7 years. That's ~10/month without fail. Most creators quit by month 6. You're built different.</p>
+      </div>
+      
+      <!-- Card 5: Self-doubt pattern -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="text-4xl mb-3">🫣</div>
+        <h4 class="font-bold text-lg mb-2">You seek validation often</h4>
+        <p class="text-sm text-gray-600">"Is this looking cute?" "Pls do not judge." "Talented toh hu mai." Your captions ask for reassurance. That's human — but notice it. Your best content is when you're <b>certain</b>.</p>
+      </div>
+      
+      <!-- Card 6: Rebrand arc -->
+      <div class="glass rounded-2xl p-6 card-hover">
+        <div class="text-4xl mb-3">🌷</div>
+        <h4 class="font-bold text-lg mb-2">You're mid-transformation</h4>
+        <p class="text-sm text-gray-600">"Rebranding My Life" series, solo trips to Vrindavan, Pilates, new hobbies. You're building version 2.0 of yourself in public. That <b>arc is the story</b>.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SIGNATURE MOVES -->
+  <section class="mb-10">
+    <div class="glass rounded-3xl p-8 fade-in" style="animation-delay:1s;">
+      <h3 class="text-3xl font-bold mb-1">💋 Your Signature Moves</h3>
+      <p class="text-gray-600 mb-6">Things only you do — keep doing these!</p>
+      
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="flex items-start gap-3 p-4 bg-gradient-to-r from-pink-50 to-transparent rounded-2xl">
+          <div class="text-3xl">🎀</div>
+          <div>
+            <div class="font-bold">Hindi-English hybrid captions</div>
+            <div class="text-sm text-gray-600">"Outfit is outfitting, makeup is makeup-ing" — this voice is yours alone</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50 to-transparent rounded-2xl">
+          <div class="text-3xl">✨</div>
+          <div>
+            <div class="font-bold">Pinterest-core aesthetic</div>
+            <div class="text-sm text-gray-600">Soft pinks, bows, bangles, cozy rooms. Consistent visual identity.</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-gradient-to-r from-pink-50 to-transparent rounded-2xl">
+          <div class="text-3xl">🪞</div>
+          <div>
+            <div class="font-bold">Transition Shorts</div>
+            <div class="text-sm text-gray-600">Outfit reveals that pop. 2,100 avg views — signature format.</div>
+          </div>
+        </div>
+        <div class="flex items-start gap-3 p-4 bg-gradient-to-r from-purple-50 to-transparent rounded-2xl">
+          <div class="text-3xl">🎁</div>
+          <div>
+            <div class="font-bold">"Haul" storytelling</div>
+            <div class="text-sm text-gray-600">You don't just review. You narrate. Like a friend showing off a shopping bag.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AUDIENCE PERSONA -->
+  <section class="mb-10">
+    <div class="relative rounded-3xl overflow-hidden shimmer fade-in" style="animation-delay:1.1s;">
+      <div class="glass p-8">
+        <h3 class="text-3xl font-bold mb-1">👯‍♀️ Who's Actually Watching You?</h3>
+        <p class="text-gray-600 mb-6">Your audience, in one person</p>
+        
+        <div class="flex flex-col md:flex-row items-center gap-8">
+          <div class="flex-shrink-0">
+            <div class="relative">
+              <div class="w-40 h-40 rounded-full bg-gradient-to-br from-pink-300 to-purple-300 flex items-center justify-center text-6xl floating">
+                💁‍♀️
+              </div>
+              <div class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full w-12 h-12 flex items-center justify-center font-bold">
+                90%
+              </div>
+            </div>
+          </div>
+          <div class="flex-1">
+            <div class="text-2xl font-bold mb-2">Meet <span class="cursive gradient-text text-4xl">"Priya"</span></div>
+            <p class="text-gray-700 mb-4">She's 19-26, lives in a tier-2 Indian city, loves Pinterest boards, shops on Meesho, saves money for Nykaa sales, watches Shorts during her lunch break, and sometimes wishes she had a friend who'd tell her what's actually worth buying.</p>
+            
+            <div class="grid grid-cols-3 gap-3">
+              <div class="bg-pink-50 rounded-xl p-3 text-center">
+                <div class="text-xs text-gray-500">Age</div>
+                <div class="font-bold text-pink-600">19-26</div>
+              </div>
+              <div class="bg-purple-50 rounded-xl p-3 text-center">
+                <div class="text-xs text-gray-500">Budget</div>
+                <div class="font-bold text-purple-600">₹200-₹2K</div>
+              </div>
+              <div class="bg-indigo-50 rounded-xl p-3 text-center">
+                <div class="text-xs text-gray-500">Vibe</div>
+                <div class="font-bold text-indigo-600">Aesthetic</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCRATCH CARDS - Hidden Insights -->
+  <section class="mb-10">
+    <h3 class="text-3xl font-bold text-center mb-2 fade-in" style="animation-delay:1.2s;">🎁 Tap to Reveal Your Secrets</h3>
+    <p class="text-center text-gray-600 mb-6">Click each card — things only your data knows about you</p>
+    
+    <div class="grid md:grid-cols-3 gap-4">
+      <div class="scratch-card rounded-2xl p-6 min-h-[180px] flex flex-col justify-center text-center text-white font-bold cursor-pointer" onclick="this.classList.toggle('revealed'); this.querySelector('.reveal').classList.toggle('hidden'); this.querySelector('.hide').classList.toggle('hidden');">
+        <div class="hide">
+          <div class="text-5xl mb-2">🎁</div>
+          <div>Tap to reveal</div>
+          <div class="text-xs opacity-80 mt-2">Your posting streak</div>
+        </div>
+        <div class="reveal hidden text-gray-800">
+          <div class="text-4xl font-bold gradient-text">7 years</div>
+          <div class="text-sm mt-2">Consistent creator since Feb 2019. You've outlasted 95% of creators who started with you.</div>
+        </div>
+      </div>
+      
+      <div class="scratch-card rounded-2xl p-6 min-h-[180px] flex flex-col justify-center text-center text-white font-bold cursor-pointer" onclick="this.classList.toggle('revealed'); this.querySelector('.reveal').classList.toggle('hidden'); this.querySelector('.hide').classList.toggle('hidden');">
+        <div class="hide">
+          <div class="text-5xl mb-2">💎</div>
+          <div>Tap to reveal</div>
+          <div class="text-xs opacity-80 mt-2">Your "aha" moment</div>
+        </div>
+        <div class="reveal hidden text-gray-800">
+          <div class="text-4xl font-bold gradient-text">Mar 16</div>
+          <div class="text-sm mt-2">The day your Kashmiri bangles Short hit 41K. This is YOUR proof that you can go viral. Remember this date.</div>
+        </div>
+      </div>
+      
+      <div class="scratch-card rounded-2xl p-6 min-h-[180px] flex flex-col justify-center text-center text-white font-bold cursor-pointer" onclick="this.classList.toggle('revealed'); this.querySelector('.reveal').classList.toggle('hidden'); this.querySelector('.hide').classList.toggle('hidden');">
+        <div class="hide">
+          <div class="text-5xl mb-2">🌸</div>
+          <div>Tap to reveal</div>
+          <div class="text-xs opacity-80 mt-2">Your love language</div>
+        </div>
+        <div class="reveal hidden text-gray-800">
+          <div class="text-4xl font-bold gradient-text">#slaywithaish</div>
+          <div class="text-sm mt-2">Used in 67% of your IG posts. It's become your identity tag. Every post is signed, "Made with love, Aish".</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLINDSPOTS - Honest section -->
+  <section class="mb-10 fade-in" style="animation-delay:1.3s;">
+    <div class="rounded-3xl bg-gradient-to-br from-gray-900 to-purple-900 p-8 text-white">
+      <div class="flex items-center gap-3 mb-4">
+        <div class="text-3xl">🪞</div>
+        <div>
+          <h3 class="text-2xl font-bold">Honest Mirror</h3>
+          <p class="text-sm opacity-80">Things only a friend (or data) would tell you</p>
+        </div>
+      </div>
+      
+      <div class="space-y-4">
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border-l-4 border-pink-400">
+          <div class="font-bold mb-1">You might be playing it too safe</div>
+          <p class="text-sm opacity-90">Your content is lovely but predictable. The posts that pop (bangles, resin art, transitions) are the ones where you tried something <b>slightly risky</b>. Do more of that.</p>
+        </div>
+        
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border-l-4 border-purple-400">
+          <div class="font-bold mb-1">Your vlogs are holding you back</div>
+          <p class="text-sm opacity-90">Travel vlogs get 150 views. They feel like homework. Your audience doesn't want to watch you — they want you to show them <b>what to buy, try, or make</b>. There's a difference.</p>
+        </div>
+        
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border-l-4 border-indigo-400">
+          <div class="font-bold mb-1">You post from scarcity</div>
+          <p class="text-sm opacity-90">Two Shorts in one day = you're worried about staying visible. One GREAT Short beats two okay ones. Trust the algorithm.</p>
+        </div>
+        
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 border-l-4 border-yellow-400">
+          <div class="font-bold mb-1">You haven't leveraged your story</div>
+          <p class="text-sm opacity-90">A girl from Dehradun, building a beauty brand at 23, solo traveling, trying hobbies — <b>THAT'S</b> the content. Your audience doesn't just want hauls. They want your becoming.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOVE LETTER -->
+  <section class="mb-10 fade-in" style="animation-delay:1.4s;">
+    <div class="polaroid max-w-2xl mx-auto bg-white rounded-lg shadow-2xl p-8">
+      <div class="border-2 border-dashed border-pink-200 rounded p-6 text-center">
+        <div class="cursive text-4xl gradient-text mb-4">To Aish,</div>
+        <p class="text-gray-700 leading-relaxed text-lg">
+          You started this at 16. You're 23 now. Most people don't stay consistent at anything for 7 years.<br/><br/>
+          
+          The algorithm doesn't see you the way your data does. Your data sees:<br/>
+          <span class="italic gradient-text">a girl who keeps showing up, even on the 100-view days.</span><br/><br/>
+          
+          The bangles Short wasn't luck — it was your <b>250th try</b>. The next viral hit is just <b>10 more tries away</b>.<br/><br/>
+          
+          Keep your voice. Drop the self-doubt in captions. Post the risky one. <br/>
+          And remember — you're not behind. You're <span class="font-bold">early</span>.
+        </p>
+        <div class="mt-6 text-right cursive text-2xl text-purple-500">— Your Data 💋</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="text-center fade-in" style="animation-delay:1.5s;">
+    <div class="inline-block glass rounded-3xl p-8 max-w-2xl">
+      <div class="text-5xl mb-3 sparkle">🔮</div>
+      <h3 class="text-2xl font-bold mb-2 gradient-text">Your Next 7 Days</h3>
+      <p class="text-gray-600 mb-5">One risky post. One trend-chase. One cross-post to Reels. That's it.</p>
+      <div class="flex gap-3 justify-center flex-wrap">
+        <a href="index.html" class="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-full font-semibold hover:scale-105 transition">
+          📊 Back to Dashboard
+        </a>
+        <button onclick="window.print()" class="px-6 py-3 bg-white rounded-full font-semibold border border-pink-200 hover:scale-105 transition">
+          💖 Save this page
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <footer class="text-center mt-10 text-sm text-gray-500">
+    <p>Made with 💗 by reading your <span class="font-semibold gradient-text">888 videos + 871 posts</span></p>
+    <p class="text-xs mt-1">Data scraped via Apify • April 28, 2026</p>
+  </footer>
+
+</main>
+
+<script>
+// Personality radar
+new Chart(document.getElementById('personalityChart').getContext('2d'), {
+  type: 'radar',
+  data: {
+    labels: ['Authenticity', 'Aesthetic', 'Consistency', 'Trend-riding', 'Audience Connect', 'Boldness'],
+    datasets: [{
+      label: 'You',
+      data: [9, 8, 10, 6, 7, 5],
+      backgroundColor: 'rgba(236, 72, 153, 0.25)',
+      borderColor: '#ec4899',
+      borderWidth: 3,
+      pointBackgroundColor: '#a855f7',
+      pointBorderColor: '#fff',
+      pointBorderWidth: 2,
+      pointRadius: 6
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      r: {
+        beginAtZero: true,
+        max: 10,
+        ticks: { stepSize: 2, color: '#9ca3af', backdropColor: 'transparent' },
+        pointLabels: { font: { size: 12, weight: 600 }, color: '#4b5563' },
+        grid: { color: 'rgba(236,72,153,0.2)' },
+        angleLines: { color: 'rgba(236,72,153,0.2)' }
+      }
+    },
+    animation: { duration: 2000 }
+  }
+});
+
+// Mood doughnut
+new Chart(document.getElementById('moodChart').getContext('2d'), {
+  type: 'doughnut',
+  data: {
+    labels: ['Playful/Relatable', 'Aspirational', 'Seeking Validation', 'Promotional', 'Emotional/Personal'],
+    datasets: [{
+      data: [38, 22, 18, 14, 8],
+      backgroundColor: ['#ec4899', '#a855f7', '#f59e0b', '#8b5cf6', '#ef4444'],
+      borderColor: '#fff',
+      borderWidth: 3
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { 
+        position: 'bottom',
+        labels: { font: { size: 11, weight: 600 }, padding: 12, color: '#4b5563' }
+      }
+    },
+    animation: { duration: 2000, animateRotate: true }
+  }
+});
+</script>
+</body>
+</html>
