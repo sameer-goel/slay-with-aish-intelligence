@@ -1,818 +1,628 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SlayWithAish — Creator Intelligence Dashboard</title>
-    <style>
-        :root {
-            --bg: #0f0f1a;
-            --card: #1a1a2e;
-            --card-hover: #22223a;
-            --accent: #e84393;
-            --accent2: #fd79a8;
-            --accent3: #a29bfe;
-            --text: #f0f0f5;
-            --muted: #9a9ab0;
-            --green: #00cec9;
-            --red: #ff6b6b;
-            --yellow: #ffeaa7;
-            --border: #2d2d44;
-            --gradient: linear-gradient(135deg, #e84393, #a29bfe);
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.6;
-            min-height: 100vh;
-        }
-        .header {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 1.5rem 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        .header-left { display: flex; align-items: center; gap: 1rem; }
-        .header-left .avatar {
-            width: 48px; height: 48px; border-radius: 50%;
-            background: var(--gradient); display: flex; align-items: center;
-            justify-content: center; font-size: 1.4rem; font-weight: 700;
-        }
-        .header-left h1 { font-size: 1.5rem; font-weight: 700; }
-        .header-left h1 span { background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .header-left .subtitle { color: var(--muted); font-size: 0.85rem; }
-        .header-right { display: flex; gap: 0.75rem; flex-wrap: wrap; }
-        .badge {
-            padding: 0.35rem 0.85rem; border-radius: 20px; font-size: 0.78rem;
-            font-weight: 600; display: flex; align-items: center; gap: 0.4rem;
-        }
-        .badge-yt { background: rgba(255,0,0,0.15); color: #ff4444; border: 1px solid rgba(255,0,0,0.25); }
-        .badge-ig { background: rgba(232,67,147,0.15); color: var(--accent2); border: 1px solid rgba(232,67,147,0.25); }
-        .badge-date { background: rgba(162,155,254,0.15); color: var(--accent3); border: 1px solid rgba(162,155,254,0.25); }
-
-        .tabs {
-            display: flex; gap: 0; background: var(--card); border-bottom: 1px solid var(--border);
-            overflow-x: auto; scrollbar-width: none;
-        }
-        .tabs::-webkit-scrollbar { display: none; }
-        .tab {
-            padding: 0.9rem 1.5rem; cursor: pointer; font-size: 0.85rem;
-            font-weight: 500; color: var(--muted); border-bottom: 2px solid transparent;
-            white-space: nowrap; transition: all 0.2s;
-        }
-        .tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
-        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-
-        .container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
-        .section { display: none; }
-        .section.active { display: block; }
-
-        .grid { display: grid; gap: 1.25rem; }
-        .grid-4 { grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); }
-        .grid-3 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
-        .grid-2 { grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); }
-
-        .card {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 12px; padding: 1.25rem; transition: all 0.2s;
-        }
-        .card:hover { border-color: rgba(232,67,147,0.3); background: var(--card-hover); }
-        .card-title {
-            font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em;
-            color: var(--muted); margin-bottom: 0.5rem; font-weight: 600;
-        }
-        .card-value { font-size: 2rem; font-weight: 700; line-height: 1.2; }
-        .card-sub { font-size: 0.82rem; color: var(--muted); margin-top: 0.35rem; }
-        .card-trend { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; font-weight: 600; margin-top: 0.35rem; }
-        .trend-up { color: var(--green); }
-        .trend-down { color: var(--red); }
-        .trend-neutral { color: var(--yellow); }
-
-        .section-title {
-            font-size: 1.15rem; font-weight: 700; margin: 2rem 0 1rem;
-            display: flex; align-items: center; gap: 0.6rem;
-        }
-        .section-title .icon { font-size: 1.3rem; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
-        th {
-            text-align: left; padding: 0.75rem 1rem; font-size: 0.75rem;
-            text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
-            border-bottom: 1px solid var(--border); font-weight: 600;
-        }
-        td { padding: 0.75rem 1rem; border-bottom: 1px solid rgba(45,45,68,0.5); }
-        tr:hover td { background: rgba(255,255,255,0.02); }
-
-        .bar-chart { display: flex; flex-direction: column; gap: 0.6rem; }
-        .bar-row { display: flex; align-items: center; gap: 0.75rem; }
-        .bar-label { width: 140px; font-size: 0.82rem; color: var(--muted); text-align: right; flex-shrink: 0; }
-        .bar-track { flex: 1; height: 28px; background: rgba(255,255,255,0.05); border-radius: 6px; overflow: hidden; position: relative; }
-        .bar-fill { height: 100%; border-radius: 6px; display: flex; align-items: center; padding-left: 0.6rem; font-size: 0.75rem; font-weight: 600; transition: width 0.8s ease; }
-        .bar-fill.pink { background: linear-gradient(90deg, var(--accent), var(--accent2)); }
-        .bar-fill.purple { background: linear-gradient(90deg, #6c5ce7, var(--accent3)); }
-        .bar-fill.teal { background: linear-gradient(90deg, #00b894, var(--green)); }
-
-        .alert-card {
-            border-left: 3px solid; padding: 1rem 1.25rem; border-radius: 0 8px 8px 0;
-            margin-bottom: 0.75rem; background: var(--card);
-        }
-        .alert-success { border-color: var(--green); }
-        .alert-warning { border-color: var(--yellow); }
-        .alert-danger { border-color: var(--red); }
-        .alert-title { font-weight: 700; font-size: 0.9rem; margin-bottom: 0.25rem; }
-        .alert-text { font-size: 0.82rem; color: var(--muted); }
-
-        .score-ring {
-            width: 120px; height: 120px; border-radius: 50%; display: flex;
-            align-items: center; justify-content: center; font-size: 2rem;
-            font-weight: 800; margin: 0 auto 1rem;
-        }
-        .score-ring.good { background: conic-gradient(var(--green) 0% 62%, rgba(255,255,255,0.08) 62% 100%); }
-        .score-ring-inner {
-            width: 90px; height: 90px; border-radius: 50%; background: var(--card);
-            display: flex; align-items: center; justify-content: center;
-        }
-
-        .pill { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 12px; font-size: 0.72rem; font-weight: 600; }
-        .pill-green { background: rgba(0,206,201,0.15); color: var(--green); }
-        .pill-red { background: rgba(255,107,107,0.15); color: var(--red); }
-        .pill-yellow { background: rgba(255,234,167,0.15); color: #fdcb6e; }
-        .pill-purple { background: rgba(162,155,254,0.15); color: var(--accent3); }
-
-        .rec-card { display: flex; gap: 1rem; align-items: flex-start; }
-        .rec-icon { font-size: 1.5rem; flex-shrink: 0; margin-top: 0.1rem; }
-        .rec-title { font-weight: 700; font-size: 0.95rem; }
-        .rec-text { font-size: 0.82rem; color: var(--muted); margin-top: 0.2rem; }
-
-        .footer {
-            text-align: center; padding: 2rem; color: var(--muted); font-size: 0.78rem;
-            border-top: 1px solid var(--border); margin-top: 2rem;
-        }
-        .footer a { color: var(--accent2); text-decoration: none; }
-
-        @media (max-width: 768px) {
-            .header { padding: 1rem; }
-            .header-left h1 { font-size: 1.2rem; }
-            .container { padding: 1rem; }
-            .grid-2, .grid-3 { grid-template-columns: 1fr; }
-            .grid-4 { grid-template-columns: repeat(2, 1fr); }
-            .bar-label { width: 100px; font-size: 0.75rem; }
-            .card-value { font-size: 1.5rem; }
-        }
-    </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>SlayWithAish • Creator Intelligence Dashboard</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  * { font-family: 'Poppins', sans-serif; }
+  body {
+    background: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #fbcfe8 100%);
+    min-height: 100vh;
+  }
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, #ec4899 0%, #a855f7 50%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .shimmer {
+    background: linear-gradient(90deg, rgba(236,72,153,0.1) 0%, rgba(168,85,247,0.2) 50%, rgba(236,72,153,0.1) 100%);
+    background-size: 200% 100%;
+    animation: shimmer 3s infinite;
+  }
+  @keyframes shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  .fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+    opacity: 0;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .pulse-ring {
+    animation: pulse-ring 2s infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.5); }
+    70% { box-shadow: 0 0 0 15px rgba(236, 72, 153, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(236, 72, 153, 0); }
+  }
+  .card-hover {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 40px rgba(236, 72, 153, 0.15);
+  }
+  .stat-counter {
+    transition: all 0.3s ease;
+  }
+  .progress-bar {
+    background: linear-gradient(90deg, #ec4899, #a855f7);
+    animation: slideIn 1.5s ease-out;
+  }
+  @keyframes slideIn {
+    from { width: 0; }
+  }
+  .floating {
+    animation: floating 3s ease-in-out infinite;
+  }
+  @keyframes floating {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+  .hot-badge {
+    animation: hotPulse 1.5s infinite;
+  }
+  @keyframes hotPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.08); }
+  }
+  .emoji-bounce {
+    display: inline-block;
+    animation: bounce 2s infinite;
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  .scroll-smooth { scroll-behavior: smooth; }
+  .tab-active {
+    background: linear-gradient(135deg, #ec4899, #a855f7);
+    color: white;
+  }
+  .scrollbar-hide::-webkit-scrollbar { display: none; }
+</style>
 </head>
-<body>
-    <div class="header">
-        <div class="header-left">
-            <div class="avatar">A</div>
-            <div>
-                <h1><span>SlayWithAish</span> Intelligence</h1>
-                <div class="subtitle">Creator Analytics Dashboard — Aishwarya Goel</div>
-            </div>
+<body class="scroll-smooth">
+
+<!-- Nav -->
+<nav class="sticky top-0 z-50 glass border-b border-white/50" style="background: rgba(255,255,255,0.7); backdrop-filter: blur(12px);">
+  <div class="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-xl">💋</div>
+      <div>
+        <div class="font-bold gradient-text">SlayWithAish</div>
+        <div class="text-xs text-gray-500">Creator Intelligence</div>
+      </div>
+    </div>
+    <div class="flex gap-2 flex-wrap">
+      <a href="index.html" class="px-3 py-2 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-semibold hover:scale-105 transition">📊 Overview</a>
+      <a href="youtube.html" class="px-3 py-2 rounded-full bg-white/50 text-sm font-semibold text-gray-700 hover:scale-105 transition">▶️ YouTube</a>
+      <a href="instagram.html" class="px-3 py-2 rounded-full bg-white/50 text-sm font-semibold text-gray-700 hover:scale-105 transition">📸 Instagram</a>
+      <a href="personality.html" class="px-3 py-2 rounded-full bg-white/50 text-sm font-semibold text-gray-700 hover:scale-105 transition">✨ DNA</a>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Header -->
+<header class="relative overflow-hidden py-8 px-6">
+  <div class="absolute inset-0 opacity-20">
+    <div class="absolute top-10 left-10 w-72 h-72 bg-pink-400 rounded-full mix-blend-multiply filter blur-3xl floating"></div>
+    <div class="absolute top-20 right-10 w-72 h-72 bg-purple-400 rounded-full mix-blend-multiply filter blur-3xl floating" style="animation-delay: 1s;"></div>
+  </div>
+  <div class="relative max-w-7xl mx-auto">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div class="fade-in">
+        <div class="flex items-center gap-3 mb-2">
+          <div class="w-16 h-16 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-white text-3xl font-bold pulse-ring">
+            💋
+          </div>
+          <div>
+            <h1 class="text-4xl font-bold gradient-text">SlayWithAish</h1>
+            <p class="text-gray-600 text-sm">Aishwarya Goel • Beauty & Lifestyle Creator • Dehradun 🌸</p>
+          </div>
         </div>
-        <div class="header-right">
-            <div class="badge badge-yt">▶ 2,630 subs</div>
-            <div class="badge badge-ig">📷 1,511 followers</div>
-            <div class="badge badge-date">📅 Apr 2026</div>
+      </div>
+      <div class="glass rounded-2xl px-6 py-3 fade-in" style="animation-delay:0.2s;">
+        <div class="flex items-center gap-2">
+          <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span class="text-sm text-gray-700">Last updated: <span class="font-semibold">Just now</span></span>
         </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main class="max-w-7xl mx-auto px-6 pb-16">
+
+  <!-- Simple Score Banner (Layman friendly) -->
+  <section class="glass rounded-3xl p-6 mb-6 fade-in" style="animation-delay:0.1s;">
+    <div class="flex items-center justify-between flex-wrap gap-4">
+      <div>
+        <p class="text-gray-600 text-sm mb-1">Your Creator Health Score</p>
+        <div class="flex items-baseline gap-2">
+          <h2 class="text-6xl font-bold gradient-text">72</h2>
+          <span class="text-xl text-gray-500">/100</span>
+          <span class="ml-3 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-semibold">↗ Growing</span>
+        </div>
+        <p class="text-gray-600 mt-2 text-sm">You're doing great on Shorts 🎉. Long videos and Instagram need love.</p>
+      </div>
+      <div class="flex gap-6">
+        <div class="text-center">
+          <div class="text-3xl mb-1 emoji-bounce">🎬</div>
+          <div class="text-xs text-gray-500">Content</div>
+          <div class="font-bold text-lg text-pink-600">A-</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl mb-1 emoji-bounce" style="animation-delay:0.2s;">📈</div>
+          <div class="text-xs text-gray-500">Growth</div>
+          <div class="font-bold text-lg text-purple-600">B</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl mb-1 emoji-bounce" style="animation-delay:0.4s;">💗</div>
+          <div class="text-xs text-gray-500">Engagement</div>
+          <div class="font-bold text-lg text-pink-600">B+</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl mb-1 emoji-bounce" style="animation-delay:0.6s;">💰</div>
+          <div class="text-xs text-gray-500">Monetize</div>
+          <div class="font-bold text-lg text-orange-500">C</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Stats Grid -->
+  <section class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
+    <!-- YT Subs -->
+    <div class="glass rounded-2xl p-5 card-hover fade-in" style="animation-delay:0.2s;">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-2xl">📺</span>
+        <span class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full font-semibold">YouTube</span>
+      </div>
+      <div class="text-3xl font-bold text-gray-800" id="yt-subs">0</div>
+      <p class="text-xs text-gray-500 mt-1">Subscribers</p>
+      <div class="mt-2 text-xs text-green-600 font-semibold">+43 this week ↗</div>
+    </div>
+    <!-- YT Views -->
+    <div class="glass rounded-2xl p-5 card-hover fade-in" style="animation-delay:0.3s;">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-2xl">👁️</span>
+        <span class="text-xs px-2 py-1 bg-red-100 text-red-600 rounded-full font-semibold">Lifetime</span>
+      </div>
+      <div class="text-3xl font-bold text-gray-800" id="yt-views">0</div>
+      <p class="text-xs text-gray-500 mt-1">Total Views</p>
+      <div class="mt-2 text-xs text-green-600 font-semibold">888 videos ever 💪</div>
+    </div>
+    <!-- IG Followers -->
+    <div class="glass rounded-2xl p-5 card-hover fade-in" style="animation-delay:0.4s;">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-2xl">📸</span>
+        <span class="text-xs px-2 py-1 bg-pink-100 text-pink-600 rounded-full font-semibold">Instagram</span>
+      </div>
+      <div class="text-3xl font-bold text-gray-800" id="ig-followers">0</div>
+      <p class="text-xs text-gray-500 mt-1">Followers</p>
+      <div class="mt-2 text-xs text-orange-600 font-semibold">Needs boost 🚀</div>
+    </div>
+    <!-- Viral Hit -->
+    <div class="glass rounded-2xl p-5 card-hover fade-in shimmer" style="animation-delay:0.5s;">
+      <div class="flex items-center justify-between mb-2">
+        <span class="text-2xl">🔥</span>
+        <span class="text-xs px-2 py-1 bg-yellow-100 text-yellow-700 rounded-full font-semibold hot-badge">VIRAL</span>
+      </div>
+      <div class="text-3xl font-bold gradient-text" id="viral-views">0</div>
+      <p class="text-xs text-gray-500 mt-1">Best Short (Kashmiri Bangles)</p>
+      <div class="mt-2 text-xs text-purple-600 font-semibold">22x your average! 🎉</div>
+    </div>
+  </section>
+
+  <!-- Two Column Section -->
+  <section class="grid md:grid-cols-2 gap-6 mb-6">
+    
+    <!-- Growth Chart -->
+    <div class="glass rounded-2xl p-6 card-hover fade-in" style="animation-delay:0.5s;">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-800">📈 Views Over Last 30 Days</h3>
+        <span class="text-xs text-gray-500">Daily</span>
+      </div>
+      <div style="height:250px;"><canvas id="viewsChart"></canvas></div>
+      <p class="text-sm text-gray-600 mt-3 bg-pink-50 p-3 rounded-xl">
+        💡 <b>Simple truth:</b> Your Shorts get 12x more views than long videos. Do more Shorts!
+      </p>
     </div>
 
-    <div class="tabs" id="tabs">
-        <div class="tab active" data-tab="command">🎯 Command Center</div>
-        <div class="tab" data-tab="youtube">▶ YouTube</div>
-        <div class="tab" data-tab="instagram">📷 Instagram</div>
-        <div class="tab" data-tab="content">📊 Content Matrix</div>
-        <div class="tab" data-tab="growth">📈 Growth</div>
-        <div class="tab" data-tab="brand">💼 Brand Readiness</div>
-        <div class="tab" data-tab="actions">⚡ Action Plan</div>
+    <!-- Content Type ROI -->
+    <div class="glass rounded-2xl p-6 card-hover fade-in" style="animation-delay:0.6s;">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-gray-800">🎯 What Works Best?</h3>
+        <span class="text-xs text-gray-500">Avg views per post</span>
+      </div>
+      <div style="height:250px;"><canvas id="contentChart"></canvas></div>
+      <p class="text-sm text-gray-600 mt-3 bg-purple-50 p-3 rounded-xl">
+        💡 <b>DIY & Product Shorts</b> are your gold. Vlogs are your kryptonite 😅
+      </p>
+    </div>
+  </section>
+
+  <!-- Viral Alert Banner -->
+  <section class="bg-gradient-to-r from-pink-500 via-purple-500 to-pink-500 rounded-3xl p-6 mb-6 text-white relative overflow-hidden shimmer fade-in" style="animation-delay:0.7s;">
+    <div class="absolute top-0 right-0 text-9xl opacity-10 floating">🔥</div>
+    <div class="relative">
+      <div class="flex items-center gap-2 mb-2">
+        <span class="px-3 py-1 bg-white/20 backdrop-blur rounded-full text-xs font-bold">🚨 VIRAL ALERT</span>
+        <span class="text-xs opacity-80">March 16, 2026</span>
+      </div>
+      <h3 class="text-2xl font-bold mb-1">Your "Viral Kashmiri Bangles" hit 41,000 views! 🎉</h3>
+      <p class="opacity-90 mb-4">This was 22x your average. You caught a trending product early — do it again!</p>
+      <div class="flex gap-3 flex-wrap">
+        <button class="bg-white text-pink-600 px-4 py-2 rounded-xl font-semibold text-sm hover:scale-105 transition">✨ Make similar content</button>
+        <button class="bg-white/20 backdrop-blur px-4 py-2 rounded-xl font-semibold text-sm hover:bg-white/30 transition">📊 See why it worked</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Top Content -->
+  <section class="glass rounded-2xl p-6 mb-6 fade-in" style="animation-delay:0.8s;">
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-bold text-gray-800">🏆 Your Top 5 Posts (Last 2 Months)</h3>
+      <div class="flex gap-2">
+        <button class="tab-active px-3 py-1 rounded-lg text-xs font-semibold">All</button>
+        <button class="px-3 py-1 rounded-lg text-xs font-semibold text-gray-600 bg-white/50">YouTube</button>
+        <button class="px-3 py-1 rounded-lg text-xs font-semibold text-gray-600 bg-white/50">Instagram</button>
+      </div>
+    </div>
+    <div class="space-y-3" id="topPosts"></div>
+  </section>
+
+  <!-- Posting Heatmap -->
+  <section class="grid md:grid-cols-3 gap-6 mb-6">
+    
+    <!-- Posting Frequency -->
+    <div class="glass rounded-2xl p-6 card-hover fade-in md:col-span-2" style="animation-delay:0.9s;">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">📅 When Are You Posting?</h3>
+      <div style="height:220px;"><canvas id="heatChart"></canvas></div>
+      <div class="grid grid-cols-3 gap-3 mt-4">
+        <div class="bg-green-50 p-3 rounded-xl text-center">
+          <div class="text-xs text-gray-500">Best Day</div>
+          <div class="font-bold text-green-700">Monday</div>
+        </div>
+        <div class="bg-yellow-50 p-3 rounded-xl text-center">
+          <div class="text-xs text-gray-500">Best Time</div>
+          <div class="font-bold text-yellow-700">7-9 PM</div>
+        </div>
+        <div class="bg-pink-50 p-3 rounded-xl text-center">
+          <div class="text-xs text-gray-500">Frequency</div>
+          <div class="font-bold text-pink-700">1/day ✅</div>
+        </div>
+      </div>
     </div>
 
-    <div class="container">
-
-        <!-- ===== COMMAND CENTER ===== -->
-        <div class="section active" id="command">
-            <div class="grid grid-4">
-                <div class="card">
-                    <div class="card-title">Weekly View Velocity</div>
-                    <div class="card-value" style="color:var(--green)">1.32×</div>
-                    <div class="card-trend trend-up">▲ 32% week-over-week</div>
-                    <div class="card-sub">Accelerating — Shorts driving momentum</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Content Output Score</div>
-                    <div class="card-value">12.5</div>
-                    <div class="card-trend trend-up">▲ Above 10pt target</div>
-                    <div class="card-sub">7 Shorts + 1 Video + 3 IG posts</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Cross-Platform Health</div>
-                    <div class="card-value" style="color:var(--yellow)">3.2%</div>
-                    <div class="card-trend trend-neutral">— YT strong, IG needs work</div>
-                    <div class="card-sub">YT: 4.8% ER | IG: 1.6% ER</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Viral Alerts (7d)</div>
-                    <div class="card-value" style="color:var(--accent)">1</div>
-                    <div class="card-trend trend-up">🔥 Kashmiri Bangles — 41K views</div>
-                    <div class="card-sub">22× above 30-day Shorts average</div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🚨</span> Priority Alerts</div>
-            <div class="alert-card alert-success">
-                <div class="alert-title">🔥 Viral Content Detected — Kashmiri Bangles Short hit 41,000 views</div>
-                <div class="alert-text">This is 22× your Shorts average. Create 2-3 follow-up Shorts on trending bangles/jewelry immediately. You already posted 2 follow-ups (1,400 and 1,000 views) — keep riding this wave.</div>
-            </div>
-            <div class="alert-card alert-warning">
-                <div class="alert-title">⚠️ Long-Form Views Critically Low — Averaging 156 views (6% of subscribers)</div>
-                <div class="alert-text">Your last 4 videos (vlogs) averaged 119-182 views. Switch to haul-format videos — your Meesho haul got 8,056 views. Vlogs are not what your audience subscribes for.</div>
-            </div>
-            <div class="alert-card alert-danger">
-                <div class="alert-title">🔴 Instagram Growth Stalled — 871 posts for 1,511 followers</div>
-                <div class="alert-text">Post-to-follower ratio is 1.73 (healthy is 5-10+). Zero Reels detected. Cross-posting Shorts as Reels is the single highest-impact action you can take.</div>
-            </div>
-            <div class="alert-card alert-warning">
-                <div class="alert-title">⚠️ Same-Day Cannibalization Detected</div>
-                <div class="alert-text">When you post 2 Shorts on the same day, the 2nd consistently gets under 200 views. Stick to 1 Short per day maximum.</div>
-            </div>
-
-            <div class="section-title"><span class="icon">📊</span> Platform Comparison — Last 2 Months</div>
-            <div class="grid grid-2">
-                <div class="card">
-                    <table>
-                        <tr><th colspan="2">▶ YouTube (Mar–Apr 2026)</th></tr>
-                        <tr><td>Total Content</td><td><strong>50</strong> (4 videos + 46 Shorts)</td></tr>
-                        <tr><td>Avg Shorts Views</td><td><strong>1,816</strong></td></tr>
-                        <tr><td>Avg Long-Form Views</td><td><strong>156</strong></td></tr>
-                        <tr><td>Best Performer</td><td><strong>41,000</strong> (Kashmiri Bangles)</td></tr>
-                        <tr><td>Shorts vs Long-Form</td><td><span class="pill pill-green">Shorts 11.6× better</span></td></tr>
-                    </table>
-                </div>
-                <div class="card">
-                    <table>
-                        <tr><th colspan="2">📷 Instagram (Mar–Apr 2026)</th></tr>
-                        <tr><td>Total Content</td><td><strong>~30</strong> carousel posts</td></tr>
-                        <tr><td>Avg Comments</td><td><strong>8.5</strong> per post</td></tr>
-                        <tr><td>Reels Posted</td><td><span class="pill pill-red">0 Reels</span></td></tr>
-                        <tr><td>Hashtag Strategy</td><td><span class="pill pill-yellow">67% just #slaywithaish</span></td></tr>
-                        <tr><td>Growth Status</td><td><span class="pill pill-red">Plateaued</span></td></tr>
-                    </table>
-                </div>
-            </div>
+    <!-- Goal Progress -->
+    <div class="glass rounded-2xl p-6 card-hover fade-in" style="animation-delay:1s;">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">🎯 Monetization Journey</h3>
+      
+      <div class="mb-4">
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-gray-600">YT 1K Subs</span>
+          <span class="font-semibold text-green-600">✅ Done!</span>
         </div>
-
-        <!-- ===== YOUTUBE ===== -->
-        <div class="section" id="youtube">
-            <div class="section-title"><span class="icon">📺</span> Channel Overview</div>
-            <div class="grid grid-4">
-                <div class="card">
-                    <div class="card-title">Total Subscribers</div>
-                    <div class="card-value">2,630</div>
-                    <div class="card-sub">~375/year avg over 7 years</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Lifetime Views</div>
-                    <div class="card-value">1.42M</div>
-                    <div class="card-sub">888 videos uploaded</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Avg Views/Video (Lifetime)</div>
-                    <div class="card-value">1,598</div>
-                    <div class="card-sub">Baseline benchmark</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Channel Age</div>
-                    <div class="card-value">7+ yrs</div>
-                    <div class="card-sub">Since Feb 2019</div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">⚡</span> Shorts vs Long-Form Performance</div>
-            <div class="grid grid-2">
-                <div class="card">
-                    <div class="card-title">YouTube Shorts (Last 2 Months)</div>
-                    <div class="card-value" style="color:var(--green)">1,816</div>
-                    <div class="card-sub">Average views per Short (46 Shorts)</div>
-                    <div style="margin-top:1rem">
-                        <div class="bar-chart">
-                            <div class="bar-row">
-                                <div class="bar-label">Kashmiri Bangles</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:100%">41,000</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Nail Extensions</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:8.8%">3,600</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Bubble Trinket Tray</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:7.3%">3,000</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Holi Transition</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:5.1%">2,100</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Meesho Earrings</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:5.1%">2,100</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Prettiest Organiser</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:4.6%">1,900</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Resin Art DIY</div>
-                                <div class="bar-track"><div class="bar-fill pink" style="width:4.4%">1,800</div></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Long-Form Videos (Last 2 Months)</div>
-                    <div class="card-value" style="color:var(--red)">156</div>
-                    <div class="card-sub">Average views per video (4 videos) — only 6% of subs watching</div>
-                    <div style="margin-top:1rem">
-                        <div class="bar-chart">
-                            <div class="bar-row">
-                                <div class="bar-label">Pre Holi Dance</div>
-                                <div class="bar-track"><div class="bar-fill purple" style="width:100%">182</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Vrindavan Trip</div>
-                                <div class="bar-track"><div class="bar-fill purple" style="width:91%">166</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Parmarth Niketan</div>
-                                <div class="bar-track"><div class="bar-fill purple" style="width:87%">159</div></div>
-                            </div>
-                            <div class="bar-row">
-                                <div class="bar-label">Prep & Pack</div>
-                                <div class="bar-track"><div class="bar-fill purple" style="width:65%">119</div></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div style="margin-top:1rem; padding:0.75rem; background:rgba(255,107,107,0.1); border-radius:8px; font-size:0.82rem;">
-                        ⚠️ All 4 are vlogs. Her best-ever video (Meesho Haul: 8,056 views) was a product haul — <strong>switch long-form to hauls only</strong>.
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🏆</span> All-Time Top YouTube Content</div>
-            <div class="card">
-                <table>
-                    <thead>
-                        <tr><th>#</th><th>Title</th><th>Views</th><th>Type</th><th>Performance</th></tr>
-                    </thead>
-                    <tbody>
-                        <tr><td>1</td><td>Viral Kashmiri Bangles</td><td><strong>41,000</strong></td><td><span class="pill pill-purple">Short</span></td><td><span class="pill pill-green">22× avg</span></td></tr>
-                        <tr><td>2</td><td>Meesho SUMMER Night Suit Haul 🎀</td><td><strong>8,056</strong></td><td><span class="pill pill-yellow">Video</span></td><td><span class="pill pill-green">5× avg</span></td></tr>
-                        <tr><td>3</td><td>Nail Extensions at Home</td><td><strong>3,600</strong></td><td><span class="pill pill-purple">Short</span></td><td><span class="pill pill-green">2× avg</span></td></tr>
-                        <tr><td>4</td><td>Bubble Trinket Tray</td><td><strong>3,000</strong></td><td><span class="pill pill-purple">Short</span></td><td><span class="pill pill-green">1.7× avg</span></td></tr>
-                        <tr><td>5</td><td>Holi Transition</td><td><strong>2,100</strong></td><td><span class="pill pill-purple">Short</span></td><td><span class="pill pill-green">1.2× avg</span></td></tr>
-                        <tr><td>6</td><td>Meesho Statement Earrings</td><td><strong>2,100</strong></td><td><span class="pill pill-purple">Short</span></td><td><span class="pill pill-green">1.2× avg</span></td></tr>
-                        <tr><td>7</td><td>Resin Art DIY</td><td><strong>1,800</strong></td><td><span class="pill pill-purple">Short</span></td><td><span class="pill pill-green">1× avg</span></td></tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div class="section-title"><span class="icon">🔬</span> Shorts Deep Dive — "Rebranding My Life" Series</div>
-            <div class="card">
-                <div class="card-sub" style="margin-bottom:1rem">30-day daily series starting April 1. Views dropped after Day 7 — audience liked the concept but not every daily update.</div>
-                <div class="bar-chart">
-                    <div class="bar-row"><div class="bar-label">Day 5</div><div class="bar-track"><div class="bar-fill teal" style="width:100%">1,700</div></div></div>
-                    <div class="bar-row"><div class="bar-label">Day 1</div><div class="bar-track"><div class="bar-fill teal" style="width:59%">1,000</div></div></div>
-                    <div class="bar-row"><div class="bar-label">Day 6</div><div class="bar-track"><div class="bar-fill teal" style="width:50%">844</div></div></div>
-                    <div class="bar-row"><div class="bar-label">Day 7</div><div class="bar-track"><div class="bar-fill teal" style="width:35%">592</div></div></div>
-                    <div class="bar-row"><div class="bar-label">Day 2</div><div class="bar-track"><div class="bar-fill purple" style="width:11%">193</div></div></div>
-                    <div class="bar-row"><div class="bar-label">Day 3 (2nd)</div><div class="bar-track"><div class="bar-fill purple" style="width:11%">179</div></div></div>
-                    <div class="bar-row"><div class="bar-label">Day 9 (alt)</div><div class="bar-track"><div class="bar-fill purple" style="width:6%">94</div></div></div>
-                </div>
-            </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full progress-bar" style="width:100%"></div>
         </div>
+      </div>
 
-        <!-- ===== INSTAGRAM ===== -->
-        <div class="section" id="instagram">
-            <div class="section-title"><span class="icon">📷</span> Instagram Overview</div>
-            <div class="grid grid-4">
-                <div class="card">
-                    <div class="card-title">Followers</div>
-                    <div class="card-value">1,511</div>
-                    <div class="card-sub">Following: 289</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Total Posts</div>
-                    <div class="card-value">871</div>
-                    <div class="card-sub">Almost all carousels</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Post-to-Follower Ratio</div>
-                    <div class="card-value" style="color:var(--red)">1.73</div>
-                    <div class="card-sub">Healthy benchmark: 5-10+</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Avg Comments/Post</div>
-                    <div class="card-value">8.5</div>
-                    <div class="card-sub">Decent for 1.5K followers</div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🚨</span> Critical Issues</div>
-            <div class="grid grid-3">
-                <div class="card" style="border-left:3px solid var(--red)">
-                    <div class="card-title" style="color:var(--red)">Zero Reels</div>
-                    <div class="card-sub">No Reels detected in recent data. Reels get 2-3× more reach than carousels. Cross-posting Shorts as Reels is the #1 growth lever.</div>
-                </div>
-                <div class="card" style="border-left:3px solid var(--yellow)">
-                    <div class="card-title" style="color:#fdcb6e">Weak Hashtag Strategy</div>
-                    <div class="card-sub">67% of posts use only #slaywithaish. Need discovery hashtags: #affordablebeauty #meeshohaul #indianbeautyblogger #dehraduncreator</div>
-                </div>
-                <div class="card" style="border-left:3px solid var(--yellow)">
-                    <div class="card-title" style="color:#fdcb6e">Growth Stalled</div>
-                    <div class="card-sub">871 posts for 1,511 followers means content isn't converting to follows. Need format shift + better discovery.</div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">#️⃣</span> Hashtag Usage Analysis</div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Hashtag</th><th>Usage (last 30 posts)</th><th>Type</th><th>Assessment</th></tr></thead>
-                    <tbody>
-                        <tr><td>#slaywithaish</td><td>20/30 posts</td><td><span class="pill pill-purple">Branded</span></td><td>Good for identity, zero discovery value</td></tr>
-                        <tr><td>#ootd</td><td>2 posts</td><td><span class="pill pill-green">Discovery</span></td><td>Use more frequently</td></tr>
-                        <tr><td>#outfitoftheday</td><td>2 posts</td><td><span class="pill pill-green">Discovery</span></td><td>Use more frequently</td></tr>
-                        <tr><td>#christmas2025</td><td>2 posts</td><td><span class="pill pill-yellow">Seasonal</span></td><td>Expired — remove</td></tr>
-                        <tr><td>Various niche</td><td>1 each</td><td><span class="pill pill-green">Discovery</span></td><td>Need consistent use</td></tr>
-                    </tbody>
-                </table>
-                <div style="margin-top:1rem; padding:0.75rem; background:rgba(162,155,254,0.1); border-radius:8px; font-size:0.82rem;">
-                    💡 <strong>Recommended hashtag set:</strong> #slaywithaish + #affordablebeauty + #meeshofinds + #nykaahaul + #indianbeautyblogger + #dehradunblogger + #budgetbeauty + #beautyhacks
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🤝</span> Collaborator Network</div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Account</th><th>Relationship</th><th>Collab Potential</th></tr></thead>
-                    <tbody>
-                        <tr><td>@vanshgupta2676</td><td>Personal circle</td><td><span class="pill pill-yellow">Low</span></td></tr>
-                        <tr><td>@mamtagoel22</td><td>Personal circle</td><td><span class="pill pill-yellow">Low</span></td></tr>
-                        <tr><td>@camperspaces</td><td>Local Dehradun creator</td><td><span class="pill pill-green">High — collab content</span></td></tr>
-                        <tr><td>@foodifly</td><td>Local Dehradun creator</td><td><span class="pill pill-green">High — cross-niche</span></td></tr>
-                        <tr><td>@kathputlee_originals</td><td>Brand/Event</td><td><span class="pill pill-purple">Brand partnership</span></td></tr>
-                        <tr><td>@akanksha_balodi_</td><td>Fellow creator</td><td><span class="pill pill-green">High — beauty collab</span></td></tr>
-                    </tbody>
-                </table>
-            </div>
+      <div class="mb-4">
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-gray-600">4K Watch Hours</span>
+          <span class="font-semibold text-orange-600">62%</span>
         </div>
-
-        <!-- ===== CONTENT MATRIX ===== -->
-        <div class="section" id="content">
-            <div class="section-title"><span class="icon">🎯</span> Content Performance Matrix — What Works vs What Doesn't</div>
-            <div class="grid grid-2">
-                <div class="card" style="border-top:3px solid var(--green)">
-                    <div class="card-title" style="color:var(--green)">✅ Winners (1,000+ views)</div>
-                    <table>
-                        <thead><tr><th>Content Type</th><th>Avg Views</th><th>Example</th></tr></thead>
-                        <tbody>
-                            <tr><td>Trending Product Shorts</td><td><strong>41,000</strong></td><td>Kashmiri Bangles</td></tr>
-                            <tr><td>DIY/Craft Shorts</td><td><strong>2,500</strong></td><td>Nails, Resin, Trinket Trays</td></tr>
-                            <tr><td>Transition Shorts</td><td><strong>1,600</strong></td><td>Outfit reveals, Holi</td></tr>
-                            <tr><td>Product Haul Videos</td><td><strong>8,056</strong></td><td>Meesho Night Suit Haul</td></tr>
-                            <tr><td>Meesho Jewelry Shorts</td><td><strong>2,050</strong></td><td>Statement Earrings</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="card" style="border-top:3px solid var(--red)">
-                    <div class="card-title" style="color:var(--red)">❌ Underperformers (Under 300 views)</div>
-                    <table>
-                        <thead><tr><th>Content Type</th><th>Avg Views</th><th>Why It Fails</th></tr></thead>
-                        <tbody>
-                            <tr><td>Vlog-style videos</td><td><strong>156</strong></td><td>Audience wants products, not vlogs</td></tr>
-                            <tr><td>Daily diary Shorts</td><td><strong>155</strong></td><td>Low visual appeal, no hook</td></tr>
-                            <tr><td>"Is this cute?" posts</td><td><strong>94</strong></td><td>Weak CTA, no trending element</td></tr>
-                            <tr><td>2nd Short same day</td><td><strong>&lt;200</strong></td><td>Algorithm cannibalization</td></tr>
-                            <tr><td>Niche DIY (Barbie house)</td><td><strong>~200</strong></td><td>Too narrow audience</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🧪</span> The Magic Formula</div>
-            <div class="card" style="text-align:center; padding:2rem;">
-                <div style="font-size:1.3rem; font-weight:700; margin-bottom:0.5rem;">
-                    <span style="color:var(--accent)">Trending Product</span> +
-                    <span style="color:var(--accent3)">Visual Transformation</span> +
-                    <span style="color:var(--green)">Under 30 Seconds</span>
-                </div>
-                <div style="font-size:2.5rem; font-weight:800; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent; margin:0.5rem 0;">
-                    = 1,500+ Views
-                </div>
-                <div style="color:var(--muted); font-size:0.9rem;">Proven by top 7 performing Shorts in the last 2 months</div>
-            </div>
-
-            <div class="section-title"><span class="icon">📅</span> Optimal Posting Strategy</div>
-            <div class="grid grid-3">
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">1️⃣</div>
-                    <div class="card-title">Shorts Per Day</div>
-                    <div class="card-value" style="color:var(--green)">1 MAX</div>
-                    <div class="card-sub">2nd Short tanks to &lt;200 views</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">📹</div>
-                    <div class="card-title">Long-Form Per Month</div>
-                    <div class="card-value" style="color:var(--accent3)">1 Haul</div>
-                    <div class="card-sub">Meesho/Nykaa hauls only — no vlogs</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">📷</div>
-                    <div class="card-title">IG Reels Per Week</div>
-                    <div class="card-value" style="color:var(--accent)">3-5</div>
-                    <div class="card-sub">Cross-post every YT Short</div>
-                </div>
-            </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full progress-bar" style="width:62%"></div>
         </div>
+      </div>
 
-        <!-- ===== GROWTH ===== -->
-        <div class="section" id="growth">
-            <div class="section-title"><span class="icon">📈</span> Growth Trajectory</div>
-            <div class="grid grid-2">
-                <div class="card">
-                    <div class="card-title">YouTube Subscriber Projection</div>
-                    <div style="margin:1rem 0;">
-                        <div class="bar-chart">
-                            <div class="bar-row"><div class="bar-label">Current (Apr 2026)</div><div class="bar-track"><div class="bar-fill pink" style="width:26%">2,630</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Jul 2026 (est.)</div><div class="bar-track"><div class="bar-fill pink" style="width:35%">3,500</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Oct 2026 (est.)</div><div class="bar-track"><div class="bar-fill pink" style="width:45%">4,500</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Dec 2026 (est.)</div><div class="bar-track"><div class="bar-fill teal" style="width:52%">5,200</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Jun 2027 (est.)</div><div class="bar-track"><div class="bar-fill teal" style="width:80%">8,000</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Dec 2027 (target)</div><div class="bar-track"><div class="bar-fill teal" style="width:100%">10,000</div></div></div>
-                        </div>
-                    </div>
-                    <div class="card-sub">Based on current Shorts momentum + recommended strategy execution. 5K subs by end of 2026 is achievable.</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Instagram Follower Projection</div>
-                    <div style="margin:1rem 0;">
-                        <div class="bar-chart">
-                            <div class="bar-row"><div class="bar-label">Current (Apr 2026)</div><div class="bar-track"><div class="bar-fill purple" style="width:15%">1,511</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Jul 2026 (w/ Reels)</div><div class="bar-track"><div class="bar-fill purple" style="width:25%">2,500</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Oct 2026 (est.)</div><div class="bar-track"><div class="bar-fill purple" style="width:40%">4,000</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Dec 2026 (est.)</div><div class="bar-track"><div class="bar-fill teal" style="width:55%">5,500</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Jun 2027 (est.)</div><div class="bar-track"><div class="bar-fill teal" style="width:80%">8,000</div></div></div>
-                            <div class="bar-row"><div class="bar-label">Dec 2027 (target)</div><div class="bar-track"><div class="bar-fill teal" style="width:100%">10,000</div></div></div>
-                        </div>
-                    </div>
-                    <div class="card-sub">Requires starting Reels immediately. Without Reels, IG stays flat at ~1,500-1,800.</div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">⚡</span> Growth Accelerators</div>
-            <div class="grid grid-3">
-                <div class="card">
-                    <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔥</div>
-                    <div class="card-title">Trend Surfing</div>
-                    <div class="card-sub">The Kashmiri Bangles Short (41K) proves she can go viral when she catches trends early. Monitor trending products on social media weekly and create Shorts within 24-48 hours.</div>
-                    <div class="card-trend trend-up" style="margin-top:0.5rem;">Impact: 10-50× normal views</div>
-                </div>
-                <div class="card">
-                    <div style="font-size:1.5rem; margin-bottom:0.5rem;">🔄</div>
-                    <div class="card-title">Cross-Platform Posting</div>
-                    <div class="card-sub">Every YouTube Short should become an Instagram Reel. Same content, zero extra effort, 2× the audience. Currently at 0% cross-posting rate.</div>
-                    <div class="card-trend trend-up" style="margin-top:0.5rem;">Impact: 2-3× IG reach</div>
-                </div>
-                <div class="card">
-                    <div style="font-size:1.5rem; margin-bottom:0.5rem;">🤝</div>
-                    <div class="card-title">Local Creator Collabs</div>
-                    <div class="card-sub">Already connected with @camperspaces, @foodifly, @akanksha_balodi_. Joint content = shared audiences. Dehradun creator community is small and collaborative.</div>
-                    <div class="card-trend trend-up" style="margin-top:0.5rem;">Impact: 500-1,000 new followers per collab</div>
-                </div>
-            </div>
+      <div class="mb-4">
+        <div class="flex justify-between text-sm mb-1">
+          <span class="text-gray-600">5K Subs Goal</span>
+          <span class="font-semibold text-purple-600">52%</span>
         </div>
-
-        <!-- ===== BRAND READINESS ===== -->
-        <div class="section" id="brand">
-            <div class="section-title"><span class="icon">💼</span> Brand Deal Readiness Score</div>
-            <div class="grid grid-3">
-                <div class="card" style="text-align:center;">
-                    <div class="score-ring good">
-                        <div class="score-ring-inner">62</div>
-                    </div>
-                    <div class="card-title">Overall Score</div>
-                    <div class="card-sub">Out of 100 — "Almost Ready"</div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Score Breakdown</div>
-                    <div class="bar-chart" style="margin-top:0.5rem;">
-                        <div class="bar-row"><div class="bar-label">Engagement Rate</div><div class="bar-track"><div class="bar-fill teal" style="width:75%">75/100</div></div></div>
-                        <div class="bar-row"><div class="bar-label">Content Quality</div><div class="bar-track"><div class="bar-fill teal" style="width:70%">70/100</div></div></div>
-                        <div class="bar-row"><div class="bar-label">Niche Authority</div><div class="bar-track"><div class="bar-fill pink" style="width:65%">65/100</div></div></div>
-                        <div class="bar-row"><div class="bar-label">Audience Size</div><div class="bar-track"><div class="bar-fill purple" style="width:40%">40/100</div></div></div>
-                        <div class="bar-row"><div class="bar-label">Cross-Platform</div><div class="bar-track"><div class="bar-fill purple" style="width:35%">35/100</div></div></div>
-                        <div class="bar-row"><div class="bar-label">Consistency</div><div class="bar-track"><div class="bar-fill teal" style="width:85%">85/100</div></div></div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-title">Brand-Facing Metrics</div>
-                    <table>
-                        <tr><td>Combined Reach</td><td><strong>4,141</strong></td></tr>
-                        <tr><td>YT Engagement Rate</td><td><strong>4.8%</strong> <span class="pill pill-green">Good</span></td></tr>
-                        <tr><td>IG Engagement Rate</td><td><strong>1.6%</strong> <span class="pill pill-red">Low</span></td></tr>
-                        <tr><td>Content Frequency</td><td><strong>Daily</strong> <span class="pill pill-green">Excellent</span></td></tr>
-                        <tr><td>Niche</td><td>Affordable Beauty</td></tr>
-                        <tr><td>Location</td><td>Dehradun, India</td></tr>
-                    </table>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🎯</span> Ideal Brand Partners</div>
-            <div class="grid grid-4">
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">🛍️</div>
-                    <div style="font-weight:700; margin:0.5rem 0;">Meesho</div>
-                    <div class="card-sub">Her haul content already features Meesho. Natural fit for affiliate/sponsored content.</div>
-                    <div class="pill pill-green" style="margin-top:0.5rem;">Ready Now</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">💄</div>
-                    <div style="font-weight:700; margin:0.5rem 0;">Nykaa</div>
-                    <div class="card-sub">Beauty niche alignment. Nykaa actively works with micro-influencers.</div>
-                    <div class="pill pill-green" style="margin-top:0.5rem;">Ready Now</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">💅</div>
-                    <div style="font-weight:700; margin:0.5rem 0;">SUGAR Cosmetics</div>
-                    <div class="card-sub">Indian beauty brand with strong micro-influencer program.</div>
-                    <div class="pill pill-yellow" style="margin-top:0.5rem;">At 5K subs</div>
-                </div>
-                <div class="card" style="text-align:center;">
-                    <div style="font-size:2rem;">🧴</div>
-                    <div style="font-weight:700; margin:0.5rem 0;">Mamaearth</div>
-                    <div class="card-sub">Skincare + affordable positioning matches her audience.</div>
-                    <div class="pill pill-yellow" style="margin-top:0.5rem;">At 5K subs</div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">💰</span> Estimated Monetization Potential</div>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Revenue Stream</th><th>Current</th><th>At 5K Subs</th><th>At 10K Subs</th></tr></thead>
-                    <tbody>
-                        <tr><td>YouTube Ad Revenue (est.)</td><td>₹500-1,000/mo</td><td>₹2,000-4,000/mo</td><td>₹5,000-10,000/mo</td></tr>
-                        <tr><td>Brand Deals (per post)</td><td>₹1,000-2,000</td><td>₹3,000-5,000</td><td>₹8,000-15,000</td></tr>
-                        <tr><td>Affiliate Revenue</td><td>₹500-1,500/mo</td><td>₹3,000-5,000/mo</td><td>₹8,000-12,000/mo</td></tr>
-                        <tr><td style="font-weight:700">Total Monthly (est.)</td><td style="font-weight:700">₹2,000-4,500</td><td style="font-weight:700; color:var(--green)">₹8,000-14,000</td><td style="font-weight:700; color:var(--green)">₹21,000-37,000</td></tr>
-                    </tbody>
-                </table>
-            </div>
+        <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+          <div class="h-full progress-bar" style="width:52%"></div>
         </div>
+      </div>
 
-        <!-- ===== ACTION PLAN ===== -->
-        <div class="section" id="actions">
-            <div class="section-title"><span class="icon">🛑</span> Stop Doing</div>
-            <div class="grid grid-3">
-                <div class="card" style="border-top:3px solid var(--red)">
-                    <div class="rec-card">
-                        <div class="rec-icon">❌</div>
-                        <div>
-                            <div class="rec-title">Vlog-Style Long-Form Videos</div>
-                            <div class="rec-text">119-182 views isn't worth the production effort. Your audience subscribes for product content, not personal vlogs.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--red)">
-                    <div class="rec-card">
-                        <div class="rec-icon">❌</div>
-                        <div>
-                            <div class="rec-title">Posting 2 Shorts Same Day</div>
-                            <div class="rec-text">Data proves the 2nd Short consistently gets under 200 views. Algorithm cannibalization is real.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--red)">
-                    <div class="rec-card">
-                        <div class="rec-icon">❌</div>
-                        <div>
-                            <div class="rec-title">IG Carousels Without Reels</div>
-                            <div class="rec-text">Carousels alone won't grow the account. Reels are Instagram's primary discovery mechanism.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="mt-5 p-3 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl">
+        <div class="text-xs text-gray-500">Est. First Brand Deal</div>
+        <div class="text-lg font-bold gradient-text">~3 months away</div>
+      </div>
+    </div>
+  </section>
 
-            <div class="section-title"><span class="icon">✅</span> Keep Doing</div>
-            <div class="grid grid-4">
-                <div class="card" style="border-top:3px solid var(--green)">
-                    <div class="rec-card">
-                        <div class="rec-icon">✅</div>
-                        <div>
-                            <div class="rec-title">Daily Shorts</div>
-                            <div class="rec-text">1 per day max. Your Shorts average 1,816 views — this is your growth engine.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--green)">
-                    <div class="rec-card">
-                        <div class="rec-icon">✅</div>
-                        <div>
-                            <div class="rec-title">DIY/Craft Content</div>
-                            <div class="rec-text">Resin, trinket trays, nails — consistently 1,500+ views.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--green)">
-                    <div class="rec-card">
-                        <div class="rec-icon">✅</div>
-                        <div>
-                            <div class="rec-title">Trend Riding</div>
-                            <div class="rec-text">Kashmiri bangles = 41K views. Stay on top of trending products.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--green)">
-                    <div class="rec-card">
-                        <div class="rec-icon">✅</div>
-                        <div>
-                            <div class="rec-title">Transition Shorts</div>
-                            <div class="rec-text">Easy to make, high replay value, reliable 1,000+ views.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🆕</span> Start Doing — Next 30 Days</div>
-            <div class="grid grid-2">
-                <div class="card" style="border-top:3px solid var(--accent)">
-                    <div class="rec-card">
-                        <div class="rec-icon">🔄</div>
-                        <div>
-                            <div class="rec-title">Cross-Post Every Short as an IG Reel</div>
-                            <div class="rec-text">This alone could double IG growth. Same content, zero extra effort. Currently at 0% cross-posting rate. Target: 100%.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--accent)">
-                    <div class="rec-card">
-                        <div class="rec-icon">🛍️</div>
-                        <div>
-                            <div class="rec-title">1 Long-Form Haul Video Per Month</div>
-                            <div class="rec-text">Meesho/Nykaa hauls get 5-10× more views than vlogs. Your best video ever (8,056 views) was a Meesho haul.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--accent)">
-                    <div class="rec-card">
-                        <div class="rec-icon">#️⃣</div>
-                        <div>
-                            <div class="rec-title">Better IG Hashtags</div>
-                            <div class="rec-text">Add #meeshofinds #affordablebeauty #indianbeautyblogger #dehraduncreator to every post. Stop relying on just #slaywithaish.</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card" style="border-top:3px solid var(--accent)">
-                    <div class="rec-card">
-                        <div class="rec-icon">🏷️</div>
-                        <div>
-                            <div class="rec-title">Create Series Formats</div>
-                            <div class="rec-text">"₹500 Challenge" or "Meesho vs Amazon" comparisons drive curiosity clicks and build returning viewers.</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-title"><span class="icon">🎯</span> The Bottom Line</div>
-            <div class="card" style="text-align:center; padding:2rem; border:1px solid var(--accent);">
-                <div style="font-size:1.1rem; color:var(--muted); margin-bottom:0.5rem;">If she executes this strategy consistently:</div>
-                <div style="font-size:1.8rem; font-weight:800; background:var(--gradient); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">
-                    5,000 YouTube Subs by December 2026
-                </div>
-                <div style="font-size:1rem; color:var(--muted); margin-top:0.75rem;">
-                    All-in on product-focused Shorts + monthly haul videos + cross-posting to IG Reels
-                </div>
-            </div>
-        </div>
+  <!-- What's Hot / What's Not -->
+  <section class="grid md:grid-cols-2 gap-6 mb-6">
+    <div class="glass rounded-2xl p-6 card-hover fade-in" style="animation-delay:1.1s;">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">✅ What's Working</h3>
+      <ul class="space-y-3">
+        <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+          <span class="text-2xl">💎</span>
+          <div>
+            <div class="font-semibold text-gray-800">DIY/Craft Shorts</div>
+            <div class="text-sm text-gray-600">Resin, trinket trays, nails — avg 1,800 views</div>
+          </div>
+        </li>
+        <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+          <span class="text-2xl">🪞</span>
+          <div>
+            <div class="font-semibold text-gray-800">Transition Shorts</div>
+            <div class="text-sm text-gray-600">Quick outfit reveals = reliable 600-2,100 views</div>
+          </div>
+        </li>
+        <li class="flex items-start gap-3 p-3 bg-green-50 rounded-xl">
+          <span class="text-2xl">🛍️</span>
+          <div>
+            <div class="font-semibold text-gray-800">Trending Products</div>
+            <div class="text-sm text-gray-600">Kashmiri bangles, Meesho earrings = your viral moments</div>
+          </div>
+        </li>
+      </ul>
     </div>
 
-    <div class="footer">
-        <p>SlayWithAish Creator Intelligence Dashboard — Built with data from <a href="https://apify.com" target="_blank">Apify</a></p>
-        <p style="margin-top:0.5rem;">Data as of April 2026 | Platforms: YouTube + Instagram | Creator: Aishwarya Goel (@SlayWithAish)</p>
+    <div class="glass rounded-2xl p-6 card-hover fade-in" style="animation-delay:1.2s;">
+      <h3 class="text-lg font-bold text-gray-800 mb-4">❌ What's NOT Working</h3>
+      <ul class="space-y-3">
+        <li class="flex items-start gap-3 p-3 bg-red-50 rounded-xl">
+          <span class="text-2xl">📼</span>
+          <div>
+            <div class="font-semibold text-gray-800">Long Vlogs</div>
+            <div class="text-sm text-gray-600">Only 119-182 views. Skip these for now.</div>
+          </div>
+        </li>
+        <li class="flex items-start gap-3 p-3 bg-red-50 rounded-xl">
+          <span class="text-2xl">📸</span>
+          <div>
+            <div class="font-semibold text-gray-800">IG Carousels only</div>
+            <div class="text-sm text-gray-600">No Reels = missing 2-3x reach</div>
+          </div>
+        </li>
+        <li class="flex items-start gap-3 p-3 bg-red-50 rounded-xl">
+          <span class="text-2xl">2️⃣</span>
+          <div>
+            <div class="font-semibold text-gray-800">2 Shorts Same Day</div>
+            <div class="text-sm text-gray-600">Second post tanks every time</div>
+          </div>
+        </li>
+      </ul>
     </div>
+  </section>
 
-    <script>
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.tab).classList.add('active');
-            });
-        });
-    </script>
+  <!-- Action Plan -->
+  <section class="bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 rounded-3xl p-8 text-white relative overflow-hidden fade-in" style="animation-delay:1.3s;">
+    <div class="absolute -top-10 -right-10 text-[200px] opacity-10 floating">💋</div>
+    <div class="relative">
+      <h3 class="text-2xl font-bold mb-2">🚀 Your Next 30 Days</h3>
+      <p class="opacity-90 mb-6">Simple steps to hit your next milestone</p>
+      
+      <div class="grid md:grid-cols-3 gap-4">
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 hover:bg-white/20 transition cursor-pointer">
+          <div class="text-3xl mb-2">1️⃣</div>
+          <h4 class="font-bold mb-2">Post 1 Short daily</h4>
+          <p class="text-sm opacity-90">Stick to product/DIY content. Skip the vlogs.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 hover:bg-white/20 transition cursor-pointer">
+          <div class="text-3xl mb-2">2️⃣</div>
+          <h4 class="font-bold mb-2">Cross-post to IG Reels</h4>
+          <p class="text-sm opacity-90">Same Short → IG Reel. Free 2x reach.</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur rounded-2xl p-5 hover:bg-white/20 transition cursor-pointer">
+          <div class="text-3xl mb-2">3️⃣</div>
+          <h4 class="font-bold mb-2">Chase trends early</h4>
+          <p class="text-sm opacity-90">Kashmiri bangles gave you 41K. Find the next one.</p>
+        </div>
+      </div>
+
+      <div class="mt-6 bg-white/20 backdrop-blur rounded-2xl p-4 flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <div class="text-xs opacity-80">If you follow this plan:</div>
+          <div class="text-2xl font-bold">5,000 YT subs by Nov 2026 🎯</div>
+        </div>
+        <button class="bg-white text-pink-600 px-5 py-2 rounded-xl font-bold hover:scale-105 transition">
+          Set Reminders 🔔
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-center mt-8 pb-4 text-sm text-gray-500">
+    <p>Powered by <span class="gradient-text font-semibold">Apify Actors</span> • Data scraped April 28, 2026</p>
+    <p class="mt-1 text-xs">Made with 💗 for Aishwarya</p>
+  </footer>
+
+</main>
+
+<script>
+// Animated counter
+function animateCounter(id, target, duration = 2000) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const start = 0;
+  const startTime = performance.now();
+  function update(now) {
+    const elapsed = now - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const val = Math.floor(start + (target - start) * eased);
+    el.textContent = val.toLocaleString();
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target.toLocaleString();
+  }
+  requestAnimationFrame(update);
+}
+
+// Trigger counters
+setTimeout(() => {
+  animateCounter('yt-subs', 2630);
+  animateCounter('yt-views', 1419287);
+  animateCounter('ig-followers', 1511);
+  animateCounter('viral-views', 41000);
+}, 400);
+
+// === Views Over Time (last 30 days simulated from real Short data) ===
+const dates = ['Mar 30','Apr 1','Apr 2','Apr 3','Apr 4','Apr 5','Apr 7','Apr 8','Apr 9','Apr 10','Apr 11','Apr 12','Apr 13','Apr 14','Apr 15','Apr 16','Apr 17','Apr 18','Apr 19','Apr 20','Apr 21','Apr 22','Apr 23','Apr 24','Apr 26','Apr 27','Apr 28'];
+const shortsViews = [3600,1000,1000,179,179,1000,1700,592,430,237,836,206,566,566,1700,428,420,1300,297,3000,1400,899,1300,645,384,1800,223];
+
+const viewsCtx = document.getElementById('viewsChart').getContext('2d');
+const gradient1 = viewsCtx.createLinearGradient(0, 0, 0, 250);
+gradient1.addColorStop(0, 'rgba(236, 72, 153, 0.6)');
+gradient1.addColorStop(1, 'rgba(236, 72, 153, 0.05)');
+
+new Chart(viewsCtx, {
+  type: 'line',
+  data: {
+    labels: dates,
+    datasets: [{
+      label: 'Shorts Views',
+      data: shortsViews,
+      borderColor: '#ec4899',
+      backgroundColor: gradient1,
+      borderWidth: 3,
+      fill: true,
+      tension: 0.4,
+      pointRadius: 4,
+      pointBackgroundColor: '#fff',
+      pointBorderColor: '#ec4899',
+      pointBorderWidth: 2,
+      pointHoverRadius: 7
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        titleColor: '#1f2937',
+        bodyColor: '#6b7280',
+        borderColor: '#ec4899',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: false
+      }
+    },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(236,72,153,0.1)' }, ticks: { color: '#9ca3af' } },
+      x: { grid: { display: false }, ticks: { color: '#9ca3af', maxRotation: 45, minRotation: 45 } }
+    },
+    animation: { duration: 2000, easing: 'easeOutQuart' }
+  }
+});
+
+// === Content Type Chart ===
+new Chart(document.getElementById('contentChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['DIY/Craft','Product Shorts','Transitions','Outfit','Hauls','Vlogs'],
+    datasets: [{
+      label: 'Avg Views',
+      data: [2400, 1800, 1100, 800, 455, 156],
+      backgroundColor: [
+        'rgba(236, 72, 153, 0.9)',
+        'rgba(168, 85, 247, 0.9)',
+        'rgba(139, 92, 246, 0.9)',
+        'rgba(244, 114, 182, 0.9)',
+        'rgba(252, 165, 165, 0.9)',
+        'rgba(209, 213, 219, 0.9)'
+      ],
+      borderRadius: 12,
+      borderSkipped: false
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(236,72,153,0.1)' }, ticks: { color: '#9ca3af' } },
+      x: { grid: { display: false }, ticks: { color: '#6b7280', font: { weight: 600 } } }
+    },
+    animation: { duration: 1800, easing: 'easeOutBack' }
+  }
+});
+
+// === Heatmap (bar approximation) ===
+new Chart(document.getElementById('heatChart').getContext('2d'), {
+  type: 'bar',
+  data: {
+    labels: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'],
+    datasets: [{
+      label: 'Avg views that day',
+      data: [1900, 1400, 1100, 900, 1200, 800, 700],
+      backgroundColor: (ctx) => {
+        const v = ctx.parsed?.y || 0;
+        const intensity = Math.min(v / 2000, 1);
+        return `rgba(236, 72, 153, ${0.3 + intensity * 0.6})`;
+      },
+      borderRadius: 10
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      y: { beginAtZero: true, grid: { color: 'rgba(236,72,153,0.1)' }, ticks: { color: '#9ca3af' } },
+      x: { grid: { display: false }, ticks: { color: '#6b7280', font: { weight: 600 } } }
+    },
+    animation: { duration: 1500 }
+  }
+});
+
+// === Top Posts ===
+const topPosts = [
+  { rank: 1, platform: 'YT Short', title: 'Viral Kashmiri Bangles ✨🪞', views: 41000, emoji: '💎', date: 'Mar 16', tag: '🔥 VIRAL' },
+  { rank: 2, platform: 'YT Short', title: 'Nail Extensions at Home', views: 3600, emoji: '💅', date: 'Mar 30', tag: '💪 Strong' },
+  { rank: 3, platform: 'YT Short', title: "Let's make Bubble Trinket Tray", views: 3000, emoji: '🎨', date: 'Apr 20', tag: '💪 Strong' },
+  { rank: 4, platform: 'YT Short', title: 'Meesho Statement Earrings Haul', views: 2100, emoji: '🪷', date: 'Mar 13', tag: '✨ Great' },
+  { rank: 5, platform: 'YT Short', title: 'Holi Transition toh banta hai', views: 2100, emoji: '🌈', date: 'Mar 3', tag: '✨ Great' }
+];
+
+const container = document.getElementById('topPosts');
+topPosts.forEach((p, i) => {
+  const row = document.createElement('div');
+  row.className = 'flex items-center gap-4 p-3 bg-white/50 rounded-xl hover:bg-white/80 transition-all card-hover fade-in';
+  row.style.animationDelay = `${1 + i*0.1}s`;
+  row.innerHTML = `
+    <div class="text-2xl font-bold gradient-text w-8">${p.rank}</div>
+    <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-pink-100 to-purple-100 flex items-center justify-center text-2xl">${p.emoji}</div>
+    <div class="flex-1 min-w-0">
+      <div class="font-semibold text-gray-800 truncate">${p.title}</div>
+      <div class="text-xs text-gray-500">${p.platform} • ${p.date}</div>
+    </div>
+    <div class="text-right">
+      <div class="font-bold text-gray-800">${p.views.toLocaleString()}</div>
+      <div class="text-xs text-gray-500">views</div>
+    </div>
+    <div class="hidden md:block">
+      <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs font-semibold">${p.tag}</span>
+    </div>
+  `;
+  container.appendChild(row);
+});
+</script>
 </body>
 </html>
